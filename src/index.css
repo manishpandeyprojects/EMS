@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #111;
+  color: #fff;
+}
+.scroll.scroll::-webkit-scrollbar {
+  display: none;
+}
+#TaskList::-webkit-scrollbar {
+  height: 6px;
+  border-radius: 4px;
+}
+
+#TaskList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#TaskList::-webkit-scrollbar-thumb {
+  background: #d2d2d2;
+}
+
+#TaskList::-webkit-scrollbar-thumb:hover {
+  background: #d2d2d2;
+}
