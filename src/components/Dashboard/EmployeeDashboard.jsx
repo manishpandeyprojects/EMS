@@ -3,12 +3,12 @@ import Header from "../common/Header";
 import TaskListCards from "../common/TaskListCards";
 import TaskList from "../TaskList/TaskList";
 
-const EmployeeDashboard = () => {
+const EmployeeDashboard = ({ data }) => {
   return (
     <>
-      <Header />
-      <TaskListCards />
-      <TaskList />
+      <Header data={data} />
+      <TaskListCards data={data} />
+      <TaskList data={data} />
     </>
   );
 };
