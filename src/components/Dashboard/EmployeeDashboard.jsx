@@ -3,10 +3,14 @@ import Header from "../common/Header";
 import TaskListCards from "../common/TaskListCards";
 import TaskList from "../TaskList/TaskList";
 
-const EmployeeDashboard = ({ data }) => {
+const EmployeeDashboard = ({ data, handleLogout }) => {
   return (
     <>
-      <Header data={data} />
+      <Header
+        data={data}
+        dashboardName="Employee Dashboard"
+        handleLogout={handleLogout}
+      />
       <TaskListCards data={data} />
       <TaskList data={data} />
     </>
