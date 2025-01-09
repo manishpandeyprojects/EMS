@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Header from "../common/Header";
 import CreateTask from "../common/CreateTask";
 import AllTasks from "../common/AllTasks";
@@ -6,15 +6,15 @@ import { AuthContext } from "../../context/AuthProvider";
 
 const AdminDashboard = ({ data, handleLogout }) => {
   const contextData = useContext(AuthContext);
+  const [employeeData, setEmployeeData] = useState(contextData);
 
   const handleCreateTask = (task) => {
     console.log("HandleCreateTask");
 
-    contextData.employees.forEach((elem, idx) => {
+    const updatedEmployees = employeeData.employees.map((elem, index) => {
       if (elem.firstname == task.assignTo) {
-        // console.log(elem);
         elem.taskLists.push({
-          id: idx,
+          id: 103 + 1,
           title: task.title,
           description: task.description,
           category: task.category,
@@ -28,10 +28,18 @@ const AdminDashboard = ({ data, handleLogout }) => {
         });
         elem.taskCount.newTask = elem.taskCount.newTask + 1;
       }
+
+      return elem;
     });
 
-    localStorage.setItem("employees", JSON.stringify(contextData.employees));
-    // console.log(contextData.employees);
+    const updatedEmployeeData = {
+      ...employeeData,
+      employees: updatedEmployees,
+    };
+
+    setEmployeeData(updatedEmployeeData);
+
+    localStorage.setItem("employees", JSON.stringify(updatedEmployees));
   };
 
   return (
@@ -42,10 +50,10 @@ const AdminDashboard = ({ data, handleLogout }) => {
         handleLogout={handleLogout}
       />
       <CreateTask
-        employeeData={contextData.employees}
+        employeeData={employeeData.employees}
         handleCreateTask={handleCreateTask}
       />
-      <AllTasks employeeData={contextData.employees} />
+      <AllTasks employeeData={employeeData.employees} />
     </>
   );
 };
