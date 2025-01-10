@@ -34,7 +34,11 @@ const App = () => {
       const filterData = authData.admin.find(
         (emp) => emp.email === e.email && emp.password === e.password
       );
-      return filterData;
+      if (filterData) {
+        return true;
+      } else {
+        return false;
+      }
     }
     if (e.role === "employee") {
       const filterData = authData.employees.find(
@@ -81,7 +85,7 @@ const App = () => {
 
   return (
     <>
-      {!user ? <Login handleLogin={handleLogin} /> : ""}
+      {!user ? <Login handleLogin={handleLogin} checkAuth={checkAuth} /> : ""}
       {user == "admin" ? (
         <AdminDashboard data={loggedInUserData} handleLogout={handleLogout} />
       ) : user == "employee" ? (

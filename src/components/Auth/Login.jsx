@@ -1,19 +1,59 @@
 import React, { useState } from "react";
 
-const Login = ({ handleLogin }) => {
+const Login = ({ handleLogin, checkAuth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   function submitHandler(e) {
     e.preventDefault();
-    handleLogin(email, password);
-    setEmail("");
-    setPassword("");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (password.trim() === "") {
+      setError("Password cannot be blank");
+      return;
+    }
+
+    const checkAdminCredentials = checkAuth({
+      email: email,
+      password: password,
+      role: "admin",
+    });
+
+    if (checkAdminCredentials) {
+      handleLogin(email, password);
+      setError("");
+      setEmail("");
+      setPassword("");
+    } else {
+      const checkEmployeeCredentials = checkAuth({
+        email: email,
+        password: password,
+        role: "employee",
+      });
+      if (checkEmployeeCredentials) {
+        handleLogin(email, password);
+        setError("");
+        setEmail("");
+        setPassword("");
+      } else {
+        setError("Please provide the correct credentials");
+      }
+    }
   }
 
   return (
     <>
       <div className="flex h-screen flex-1 items-center flex-col justify-center px-6 py-12 lg:px-8 ">
+        <h1 className="text-center text-5xl font-bold tracking-tight text-white pb-7">
+          Login
+        </h1>
         <div className="border-emerald-600 border-2 rounded-lg p-6 sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="">
             <h2 className="text-center text-2xl/9 font-bold tracking-tight text-white">
@@ -44,7 +84,6 @@ const Login = ({ handleLogin }) => {
                     id="email"
                     name="email"
                     type="email"
-                    required
                     autoComplete="email"
                     className="block w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-gray-400 sm:text-sm/6 rounded-full outline-none border-2 border-emerald-600"
                   />
@@ -59,14 +98,6 @@ const Login = ({ handleLogin }) => {
                   >
                     Password
                   </label>
-                  {/* <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div> */}
                 </div>
                 <div className="mt-2">
                   <input
@@ -77,13 +108,13 @@ const Login = ({ handleLogin }) => {
                     id="password"
                     name="password"
                     type="password"
-                    required
                     autoComplete="current-password"
                     className="block w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-gray-400 sm:text-sm/6 rounded-full outline-none border-2 border-emerald-600"
                   />
                 </div>
               </div>
 
+              {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
               <div>
                 <button
                   type="submit"
@@ -93,16 +124,6 @@ const Login = ({ handleLogin }) => {
                 </button>
               </div>
             </form>
-
-            {/* <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Not a member?{" "}
-            <a
-              href="#"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Start a 14 day free trial
-            </a>
-          </p> */}
           </div>
         </div>
       </div>
