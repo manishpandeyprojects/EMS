@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+backend/wp-admin
+backend/wp-includes
+backend/wp-content/upgrade-temp-backup
+backend/wp-content/themes/twentytwentytwo
+backend/wp-content/themes/twentytwentythree
 
 # Editor directories and files
 .vscode/*
