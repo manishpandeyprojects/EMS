@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Twenty Twenty-Four functions and definitions
  *
@@ -12,20 +13,21 @@
  * Register block styles.
  */
 
-if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
+if (! function_exists('twentytwentyfour_block_styles')) :
 	/**
 	 * Register custom block styles
 	 *
 	 * @since Twenty Twenty-Four 1.0
 	 * @return void
 	 */
-	function twentytwentyfour_block_styles() {
+	function twentytwentyfour_block_styles()
+	{
 
 		register_block_style(
 			'core/details',
 			array(
 				'name'         => 'arrow-icon-details',
-				'label'        => __( 'Arrow icon', 'twentytwentyfour' ),
+				'label'        => __('Arrow icon', 'twentytwentyfour'),
 				/*
 				 * Styles for the custom Arrow icon style of the Details block
 				 */
@@ -48,7 +50,7 @@ if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
 			'core/post-terms',
 			array(
 				'name'         => 'pill',
-				'label'        => __( 'Pill', 'twentytwentyfour' ),
+				'label'        => __('Pill', 'twentytwentyfour'),
 				/*
 				 * Styles variation for post terms
 				 * https://github.com/WordPress/gutenberg/issues/24956
@@ -71,7 +73,7 @@ if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
 			'core/list',
 			array(
 				'name'         => 'checkmark-list',
-				'label'        => __( 'Checkmark', 'twentytwentyfour' ),
+				'label'        => __('Checkmark', 'twentytwentyfour'),
 				/*
 				 * Styles for the custom checkmark list block style
 				 * https://github.com/WordPress/gutenberg/issues/51480
@@ -90,7 +92,7 @@ if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
 			'core/navigation-link',
 			array(
 				'name'         => 'arrow-link',
-				'label'        => __( 'With arrow', 'twentytwentyfour' ),
+				'label'        => __('With arrow', 'twentytwentyfour'),
 				/*
 				 * Styles for the custom arrow nav link block style
 				 */
@@ -108,7 +110,7 @@ if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
 			'core/heading',
 			array(
 				'name'         => 'asterisk',
-				'label'        => __( 'With asterisk', 'twentytwentyfour' ),
+				'label'        => __('With asterisk', 'twentytwentyfour'),
 				'inline_style' => "
 				.is-style-asterisk:before {
 					content: '';
@@ -144,20 +146,21 @@ if ( ! function_exists( 'twentytwentyfour_block_styles' ) ) :
 	}
 endif;
 
-add_action( 'init', 'twentytwentyfour_block_styles' );
+add_action('init', 'twentytwentyfour_block_styles');
 
 /**
  * Enqueue block stylesheets.
  */
 
-if ( ! function_exists( 'twentytwentyfour_block_stylesheets' ) ) :
+if (! function_exists('twentytwentyfour_block_stylesheets')) :
 	/**
 	 * Enqueue custom block stylesheets
 	 *
 	 * @since Twenty Twenty-Four 1.0
 	 * @return void
 	 */
-	function twentytwentyfour_block_stylesheets() {
+	function twentytwentyfour_block_stylesheets()
+	{
 		/**
 		 * The wp_enqueue_block_style() function allows us to enqueue a stylesheet
 		 * for a specific block. These will only get loaded when the block is rendered
@@ -170,37 +173,176 @@ if ( ! function_exists( 'twentytwentyfour_block_stylesheets' ) ) :
 			'core/button',
 			array(
 				'handle' => 'twentytwentyfour-button-style-outline',
-				'src'    => get_parent_theme_file_uri( 'assets/css/button-outline.css' ),
-				'ver'    => wp_get_theme( get_template() )->get( 'Version' ),
-				'path'   => get_parent_theme_file_path( 'assets/css/button-outline.css' ),
+				'src'    => get_parent_theme_file_uri('assets/css/button-outline.css'),
+				'ver'    => wp_get_theme(get_template())->get('Version'),
+				'path'   => get_parent_theme_file_path('assets/css/button-outline.css'),
 			)
 		);
 	}
 endif;
 
-add_action( 'init', 'twentytwentyfour_block_stylesheets' );
+add_action('init', 'twentytwentyfour_block_stylesheets');
 
 /**
  * Register pattern categories.
  */
 
-if ( ! function_exists( 'twentytwentyfour_pattern_categories' ) ) :
+if (! function_exists('twentytwentyfour_pattern_categories')) :
 	/**
 	 * Register pattern categories
 	 *
 	 * @since Twenty Twenty-Four 1.0
 	 * @return void
 	 */
-	function twentytwentyfour_pattern_categories() {
+	function twentytwentyfour_pattern_categories()
+	{
 
 		register_block_pattern_category(
 			'twentytwentyfour_page',
 			array(
-				'label'       => _x( 'Pages', 'Block pattern category', 'twentytwentyfour' ),
-				'description' => __( 'A collection of full page layouts.', 'twentytwentyfour' ),
+				'label'       => _x('Pages', 'Block pattern category', 'twentytwentyfour'),
+				'description' => __('A collection of full page layouts.', 'twentytwentyfour'),
 			)
 		);
 	}
 endif;
 
-add_action( 'init', 'twentytwentyfour_pattern_categories' );
+add_action('init', 'twentytwentyfour_pattern_categories');
+
+
+add_filter('rest_user_query', 'remove_has_published_posts_from_api_user_query', 10, 2);
+function remove_has_published_posts_from_api_user_query($prepared_args, $request)
+{
+	unset($prepared_args['has_published_posts']);
+
+	return $prepared_args;
+}
+
+
+
+add_filter('rest_prepare_user', 'add_additional_fields_to_user_response', 10, 3);
+function add_additional_fields_to_user_response($response, $user, $request)
+{
+	$response->data['email'] = $user->user_email;
+	$response->data['roles'] = $user->roles;
+	$response->data['registered'] = $user->user_registered;
+	$response->data['display_name'] = $user->display_name;
+	$response->data['pass'] = $user->user_pass;
+	$response->data['registered'] = $user->user_registered;
+	return $response;
+}
+
+
+add_filter('jwt_auth_token_before_dispatch', 'add_additional_user_data_to_jwt', 10, 2);
+function add_additional_user_data_to_jwt($data, $user)
+{
+	$data['user_id'] = $user->ID;  // Add user ID
+	$data['user_email'] = $user->data->user_email;
+	$data['user_nicename'] = $user->data->user_nicename;
+	$data['user_display_name'] = $user->data->display_name;
+	$data['user_roles'] = $user->roles;  // Add user roles
+	$data['user_registered'] = $user->user_registered;  // Add registration date
+	$data['user_first_name'] = $user->first_name;  // Add first name (if available)
+	$data['user_last_name'] = $user->last_name;  // Add last name (if available)
+
+	return $data;
+}
+
+
+
+
+add_action('rest_api_init', function () {
+	register_rest_route('custom/v1', '/register', array(
+		'methods' => 'POST',
+		'callback' => 'custom_user_registration',
+		'permission_callback' => '__return_true', // Allow unauthenticated access
+	));
+});
+
+function custom_user_registration($request)
+{
+	$parameters = $request->get_json_params();
+
+	$username = sanitize_user($parameters['username']);
+	$email = sanitize_email($parameters['email']);
+	$password = sanitize_text_field($parameters['password']);
+	$first_name = sanitize_text_field($parameters['first_name']);
+	$last_name = sanitize_text_field($parameters['last_name']);
+
+	if (empty($username) || empty($email) || empty($password)) {
+		return new WP_Error('missing_field', 'Username, email, and password are required.', array('status' => 400));
+	}
+
+	if (username_exists($username) || email_exists($email)) {
+		return new WP_Error('user_exists', 'Username or email already exists.', array('status' => 400));
+	}
+
+	$user_id = wp_create_user($username, $password, $email);
+
+	if (is_wp_error($user_id)) {
+		return $user_id; // Return any error encountered during user creation
+	}
+
+	// Update additional user meta
+	wp_update_user(array(
+		'ID' => $user_id,
+		'first_name' => $first_name,
+		'last_name' => $last_name,
+	));
+
+	return array(
+		'id' => $user_id,
+		'username' => $username,
+		'email' => $email,
+		'first_name' => $first_name,
+		'last_name' => $last_name,
+	);
+}
+
+function register_task_post_type()
+{
+	$labels = array(
+		'name'               => _x('Tasks', 'Post type general name', 'textdomain'),
+		'singular_name'      => _x('Task', 'Post type singular name', 'textdomain'),
+		'menu_name'          => _x('Tasks', 'Admin Menu text', 'textdomain'),
+		'name_admin_bar'     => _x('Task', 'Add New on Toolbar', 'textdomain'),
+		'add_new'            => __('Add New', 'textdomain'),
+		'add_new_item'       => __('Add New Task', 'textdomain'),
+		'new_item'           => __('New Task', 'textdomain'),
+		'edit_item'          => __('Edit Task', 'textdomain'),
+		'view_item'          => __('View Task', 'textdomain'),
+		'all_items'          => __('All Tasks', 'textdomain'),
+		'search_items'       => __('Search Tasks', 'textdomain'),
+		'parent_item_colon'  => __('Parent Tasks:', 'textdomain'),
+		'not_found'          => __('No tasks found.', 'textdomain'),
+		'not_found_in_trash' => __('No tasks found in Trash.', 'textdomain'),
+	);
+
+	$args = array(
+		'labels'             => $labels,
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'query_var'          => true,
+		'rewrite'            => array('slug' => 'task'),
+		'capability_type'    => 'post',
+		'has_archive'        => true,
+		'hierarchical'       => false,
+		'menu_position'      => null,
+		'menu_icon'          => 'dashicons-list-view', // Choose an icon from https://developer.wordpress.org/resource/dashicons/
+		'supports'           => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments'),
+		'show_in_rest'       => true, // Enable Gutenberg and REST API support
+	);
+
+	register_post_type('task', $args);
+}
+
+add_action('init', 'register_task_post_type');
+
+function disable_gutenberg_for_all_post_types()
+{
+	add_filter('use_block_editor_for_post_type', '__return_false', 10);
+}
+
+add_action('init', 'disable_gutenberg_for_all_post_types');
